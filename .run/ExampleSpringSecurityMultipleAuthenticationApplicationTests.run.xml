@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ExampleSpringSecurityMultipleAuthenticationApplicationTests" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+    <module name="example-spring-security-multiple-authentication" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="io.github.toquery.example.spring.security.multiple.authentication.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <option name="PACKAGE_NAME" value="io.github.toquery.example.spring.security.multiple.authentication" />
+    <option name="MAIN_CLASS_NAME" value="io.github.toquery.example.spring.security.multiple.authentication.ExampleSpringSecurityMultipleAuthenticationApplicationTests" />
+    <option name="METHOD_NAME" value="" />
+    <option name="TEST_OBJECT" value="class" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

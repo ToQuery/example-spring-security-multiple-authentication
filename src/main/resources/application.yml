@@ -1,0 +1,53 @@
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.springframework.security: trace
+    org.springframework.security.oauth2: trace
+#    org.springframework.boot.autoconfigure: DEBUG
+
+management:
+  server:
+    port: 8081
+
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+  endpoint:
+    health:
+      enabled: true
+      probes:
+        enabled: true
+      show-details: always
+    info:
+      enabled: true
+
+  health:
+    livenessState: # ?? /actuator/health/liveness
+      enabled: true
+    readinessState: # ?? /actuator/health/readiness
+      enabled: true
+
+  metrics:
+    enable:
+      jvm: true
+    use-global-registry: false
+    tags:
+      application: ${spring.application.name}
+
+
+server:
+  shutdown: graceful
+
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  profiles:
+    active: local
+  application:
+    name: example-spring-security-multiple-authentication
+
+
