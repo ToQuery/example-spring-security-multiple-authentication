@@ -8,9 +8,6 @@ logging:
 #    org.springframework.boot.autoconfigure: DEBUG
 
 management:
-  server:
-    port: 8081
-
   endpoints:
     web:
       exposure:
@@ -41,6 +38,7 @@ management:
 
 server:
   shutdown: graceful
+  port: 8010
 
 spring:
   lifecycle:
@@ -50,4 +48,26 @@ spring:
   application:
     name: example-spring-security-multiple-authentication
 
-
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:9000/oauth2/jwks
+      client:
+        registration:
+          toquery-example:
+            client-id: example
+            client-name: example
+            client-authentication-method: basic
+            authorization-grant-type: authorization_code
+            redirect-uri: http://127.0.0.1:8090/admin/index
+            provider: toquery-example-provider
+            scope:
+              - openid
+              - write
+              - read
+        provider:
+          toquery-example-provider:
+            jwk-set-uri: http://127.0.0.1:9000/oauth2/jwks
+            authorization-uri: http://127.0.0.1:9000/oauth2/authorize
+            token-uri: http://127.0.0.1:9000/oauth2/token

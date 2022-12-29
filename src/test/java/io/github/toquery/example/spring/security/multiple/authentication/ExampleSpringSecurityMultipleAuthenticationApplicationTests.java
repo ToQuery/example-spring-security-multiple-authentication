@@ -73,7 +73,7 @@ class ExampleSpringSecurityMultipleAuthenticationApplicationTests {
         mockMvc.perform(
                         MockMvcRequestBuilders
                                 .get("/open")
-                                .with(SecurityMockMvcRequestPostProcessors.httpBasic("open", "123456"))
+                                .with(SecurityMockMvcRequestPostProcessors.jwt())
                 )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
