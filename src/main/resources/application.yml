@@ -52,22 +52,33 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:9000/oauth2/jwks
+          jwk-set-uri: ${app.oauth2.domain}/oauth2/jwks
       client:
         registration:
-          toquery-example:
+          toquery:
             client-id: example
             client-name: example
-            client-authentication-method: basic
+            client-authentication-method: client_secret_basic
             authorization-grant-type: authorization_code
-            redirect-uri: http://127.0.0.1:8090/admin/index
-            provider: toquery-example-provider
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            provider: toquery
             scope:
-              - openid
-              - write
+#              - openid
               - read
+              - write
+              - profile
+              - email
+              - address
+              - phone
         provider:
-          toquery-example-provider:
-            jwk-set-uri: http://127.0.0.1:9000/oauth2/jwks
-            authorization-uri: http://127.0.0.1:9000/oauth2/authorize
-            token-uri: http://127.0.0.1:9000/oauth2/token
+          toquery:
+            jwk-set-uri: ${app.oauth2.domain}/oauth2/jwks
+            authorization-uri: ${app.oauth2.domain}/oauth2/authorize
+            token-uri: ${app.oauth2.domain}/oauth2/token
+            user-info-uri: ${app.oauth2.domain}/userinfo
+            user-name-attribute: sub
+
+
+app:
+  oauth2:
+    domain: http://127.0.0.1:9000
