@@ -41,6 +41,9 @@ server:
   port: 8010
 
 spring:
+  docker:
+    compose:
+      enabled: false
   lifecycle:
     timeout-per-shutdown-phase: 30s
   profiles:
