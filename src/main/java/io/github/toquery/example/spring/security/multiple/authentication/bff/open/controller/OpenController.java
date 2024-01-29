@@ -1,4 +1,4 @@
-package io.github.toquery.example.spring.security.multiple.authentication.bff.admin.test;
+package io.github.toquery.example.spring.security.multiple.authentication.bff.open.controller;
 
 import io.github.toquery.example.spring.security.multiple.authentication.core.utils.AuthenticationUtils;
 import org.springframework.security.core.Authentication;
@@ -17,15 +17,15 @@ import java.util.Map;
  *
  */
 @RestController
-@RequestMapping("/admin/test")
-public class AdminTestController {
+@RequestMapping("/open")
+public class OpenController {
 
     @ResponseBody
     @GetMapping(value = {"", "/", "/info", "/index"})
     public Map<String, Object> index(
             Authentication authentication,
             @AuthenticationPrincipal OAuth2User oauth2User,
-            @RegisteredOAuth2AuthorizedClient OAuth2AuthorizedClient authorizedClient
+            @RegisteredOAuth2AuthorizedClient("example-spring-authorization-server") OAuth2AuthorizedClient authorizedClient
     ) {
         return AuthenticationUtils.authenticationInfo(this.getClass().getSimpleName(), authentication, oauth2User, authorizedClient);
     }

@@ -1,7 +1,8 @@
 package io.github.toquery.example.spring.security.multiple.authentication.core.config;
 
 import io.github.toquery.example.spring.security.multiple.authentication.core.security.userdetails.AppUserDetailsService;
-import io.github.toquery.example.spring.security.multiple.authentication.core.security.userdetails.RootUserDetailsService;
+import io.github.toquery.example.spring.security.multiple.authentication.core.security.userdetails.AdminUserDetailsService;
+import io.github.toquery.example.spring.security.multiple.authentication.core.security.userdetails.FilterUserDetailsService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,30 @@ import org.springframework.security.web.authentication.RequestMatcherDelegatingA
 public class SecurityMultiAuthenticationManagerConfig {
 
     @Configuration
+    public static class FilterSecurityConfig {
+        /**
+         * 移动端用户
+         */
+        @Bean
+        public UserDetailsService filterUserDetailsService() {
+            return new FilterUserDetailsService();
+        }
+
+        @Bean
+        protected AuthenticationProvider filterAuthenticationProvider(UserDetailsService filterUserDetailsService) {
+            DaoAuthenticationProvider appDaoAuthenticationProvider = new DaoAuthenticationProvider();
+            appDaoAuthenticationProvider.setUserDetailsService(filterUserDetailsService);
+            return appDaoAuthenticationProvider;
+        }
+
+
+        @Bean
+        public AuthenticationManager filterAuthenticationManager(AuthenticationProvider filterAuthenticationProvider) {
+            return filterAuthenticationProvider::authenticate;
+        }
+    }
+
+    @Configuration
     public static class AppSecurityConfig {
         /**
          * 移动端用户
@@ -33,9 +58,7 @@ public class SecurityMultiAuthenticationManagerConfig {
         }
 
         @Bean
-        protected AuthenticationProvider appAuthenticationProvider(
-                UserDetailsService appUserDetailsService
-        ) throws Exception {
+        protected AuthenticationProvider appAuthenticationProvider(UserDetailsService appUserDetailsService) {
             DaoAuthenticationProvider appDaoAuthenticationProvider = new DaoAuthenticationProvider();
             appDaoAuthenticationProvider.setUserDetailsService(appUserDetailsService);
             return appDaoAuthenticationProvider;
@@ -67,26 +90,24 @@ public class SecurityMultiAuthenticationManagerConfig {
 
 
     @Configuration
-    public static class RootSecurityConfig {
+    public static class AdminSecurityConfig {
 
         @Bean
-        public UserDetailsService rootUserDetailsService() {
-            return new RootUserDetailsService();
+        public UserDetailsService adminUserDetailsService() {
+            return new AdminUserDetailsService();
         }
 
         @Bean
-        protected AuthenticationProvider rootAuthenticationProvider(
-                UserDetailsService rootUserDetailsService
-        ) throws Exception {
-            DaoAuthenticationProvider rootDaoAuthenticationProvider = new DaoAuthenticationProvider();
-            rootDaoAuthenticationProvider.setUserDetailsService(rootUserDetailsService);
-            return rootDaoAuthenticationProvider;
+        protected AuthenticationProvider adminAuthenticationProvider(UserDetailsService adminUserDetailsService) {
+            DaoAuthenticationProvider adminDaoAuthenticationProvider = new DaoAuthenticationProvider();
+            adminDaoAuthenticationProvider.setUserDetailsService(adminUserDetailsService);
+            return adminDaoAuthenticationProvider;
         }
 
         @Bean
         @Primary
-        public AuthenticationManager rootAuthenticationManager(AuthenticationProvider rootAuthenticationProvider) {
-            return rootAuthenticationProvider::authenticate;
+        public AuthenticationManager adminAuthenticationManager(AuthenticationProvider adminAuthenticationProvider) {
+            return adminAuthenticationProvider::authenticate;
         }
 
     }
@@ -96,15 +117,15 @@ public class SecurityMultiAuthenticationManagerConfig {
     public AuthenticationManagerResolver<HttpServletRequest> multiAuthenticationManager(
             AuthenticationManager appAuthenticationManager,
             AuthenticationManager openAuthenticationManager,
-            AuthenticationManager rootAuthenticationManager
+            AuthenticationManager adminAuthenticationManager,
+            AuthenticationManager filterAuthenticationManager
     ) {
         RequestMatcherDelegatingAuthenticationManagerResolver.Builder requestMatcherDelegatingAuthenticationManagerResolverBuilder = RequestMatcherDelegatingAuthenticationManagerResolver.builder();
         // 处理 /open 认证协议
         requestMatcherDelegatingAuthenticationManagerResolverBuilder.add(request -> request.getRequestURI().startsWith("/open"), openAuthenticationManager);
-
-        requestMatcherDelegatingAuthenticationManagerResolverBuilder.add(request -> request.getRequestURI().startsWith("/root"), rootAuthenticationManager);
-
+        requestMatcherDelegatingAuthenticationManagerResolverBuilder.add(request -> request.getRequestURI().startsWith("/admin"), adminAuthenticationManager);
         requestMatcherDelegatingAuthenticationManagerResolverBuilder.add(request -> request.getRequestURI().startsWith("/app"), appAuthenticationManager);
+        requestMatcherDelegatingAuthenticationManagerResolverBuilder.add(request -> request.getRequestURI().startsWith("/filter"), filterAuthenticationManager);
 
         return requestMatcherDelegatingAuthenticationManagerResolverBuilder.build();
     }

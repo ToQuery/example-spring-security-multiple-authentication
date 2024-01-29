@@ -8,13 +8,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 /**
  *
  */
-public class RootUserDetailsService implements UserDetailsService {
+public class FilterUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return User.withUsername("root")
+        return User.withUsername("filter")
                 .password("{noop}123456")
-                .roles("ROOT")
-                .authorities("ROOT")
+                .roles("FILTER")
+                .authorities("FILTER")
                 .disabled(false)
                 .build();
     }

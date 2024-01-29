@@ -3,8 +3,16 @@ package io.github.toquery.example.spring.security.multiple.authentication.core.c
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationManagerResolver;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
+import org.springframework.security.oauth2.server.resource.authentication.OpaqueTokenAuthenticationProvider;
+import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
@@ -28,12 +36,20 @@ public class ResourceSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain oauth2ResourceServerSecurityFilterChain(
+    public SecurityFilterChain openServerSecurityFilterChain(
             HttpSecurity http,
             BearerTokenResolver bearerTokenResolver,
             AuthenticationManagerResolver<HttpServletRequest> multiClientAuthenticationManager
     ) throws Exception {
 
+        http.csrf(AbstractHttpConfigurer::disable);
+
+        http.sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+
+        http.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
+            authorizationManagerRequestMatcherRegistry.requestMatchers("/open/**").hasAuthority("SCOPE_write");
+        });
 
         http.oauth2ResourceServer(httpSecurityOAuth2ResourceServerConfigurer -> {
             httpSecurityOAuth2ResourceServerConfigurer.bearerTokenResolver(bearerTokenResolver);

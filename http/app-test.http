@@ -1,0 +1,14 @@
+### App User Login
+POST http://localhost:8010/login
+Content-Type: application/json
+
+{
+  "username":"app",
+  "password":"123456"
+}
+
+> {% client.global.set("access_token", response.body.access_token);  %}
+
+### Query the Demo endpoint
+GET http://localhost:8010/app/info
+Authorization: Bearer {{access_token}}

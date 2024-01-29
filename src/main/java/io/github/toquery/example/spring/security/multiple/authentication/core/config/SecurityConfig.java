@@ -31,7 +31,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
             authorizationManagerRequestMatcherRegistry.requestMatchers(HttpMethod.OPTIONS).permitAll();
             authorizationManagerRequestMatcherRegistry.requestMatchers("/", "/error", "/login").permitAll();
-            authorizationManagerRequestMatcherRegistry.requestMatchers("/root").hasAuthority("ROOT");
+            authorizationManagerRequestMatcherRegistry.requestMatchers("/app").hasAuthority("ROOT");
+            authorizationManagerRequestMatcherRegistry.requestMatchers("/admin").hasAuthority("ROOT");
             authorizationManagerRequestMatcherRegistry.requestMatchers("/open/**").hasAuthority("SCOPE_write");
         });
 

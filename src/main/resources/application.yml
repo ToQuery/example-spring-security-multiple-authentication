@@ -58,15 +58,16 @@ spring:
           jwk-set-uri: ${app.oauth2.domain}/oauth2/jwks
       client:
         registration:
-          toquery:
-            client-id: example
-            client-name: example
+          example-spring-authorization-server:
+            client-id: example-spring-security-multiple-authentication
+            client-name: example-spring-security-multiple-authentication
+            client-secret: example-spring-security-multiple-authentication-secret
             client-authentication-method: client_secret_basic
             authorization-grant-type: authorization_code
             redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
-            provider: toquery
+            provider: example-spring-authorization-server
             scope:
-#              - openid
+              - openid
               - read
               - write
               - profile
@@ -74,7 +75,7 @@ spring:
               - address
               - phone
         provider:
-          toquery:
+          example-spring-authorization-server:
             jwk-set-uri: ${app.oauth2.domain}/oauth2/jwks
             authorization-uri: ${app.oauth2.domain}/oauth2/authorize
             token-uri: ${app.oauth2.domain}/oauth2/token
@@ -84,4 +85,4 @@ spring:
 
 app:
   oauth2:
-    domain: http://127.0.0.1:9000
+    domain: http://example-spring-authorization-server.local:9000

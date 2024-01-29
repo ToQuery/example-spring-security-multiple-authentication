@@ -1,4 +1,4 @@
-package io.github.toquery.example.spring.security.multiple.authentication;
+package io.github.toquery.example.spring.security.multiple.authentication.admin;
 
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
@@ -10,47 +10,31 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-
 @SpringBootTest
 @AutoConfigureMockMvc
-class ExampleSpringSecurityMultipleAuthenticationApplicationTests {
+public class AdminControllerTests {
 
 
     @Resource
     private MockMvc mockMvc;
 
-
     @Test
-    void contextLoads() {
-    }
-
-    @Test
-    void index() throws Exception {
+    void adminAuthentication() throws Exception {
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/")
+                        MockMvcRequestBuilders
+                                .get("/admin")
+                                .with(SecurityMockMvcRequestPostProcessors.httpBasic("admin", "123456"))
                 )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("root"));
+                .andExpect(MockMvcResultMatchers.content().string("admin"));
     }
 
     @Test
-    void rootAuthentication() throws Exception {
+    void adminAuthenticationError401() throws Exception {
         mockMvc.perform(
                         MockMvcRequestBuilders
-                                .get("/index")
-                                .with(SecurityMockMvcRequestPostProcessors.httpBasic("root", "123456"))
-                )
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("root"));
-    }
-
-    @Test
-    void rootAuthenticationError401() throws Exception {
-        mockMvc.perform(
-                        MockMvcRequestBuilders
-                                .get("/index")
+                                .get("/admin")
                                 .with(SecurityMockMvcRequestPostProcessors.httpBasic("error", "123456"))
                 )
                 .andDo(MockMvcResultHandlers.print())
@@ -58,18 +42,14 @@ class ExampleSpringSecurityMultipleAuthenticationApplicationTests {
     }
 
     @Test
-    void rootAuthenticationError403() throws Exception {
+    void adminAuthenticationError403() throws Exception {
         mockMvc.perform(
                         MockMvcRequestBuilders
-                                .get("/index")
-                                .with(SecurityMockMvcRequestPostProcessors.httpBasic("open", "123456"))
+                                .get("/admin")
+                                .with(SecurityMockMvcRequestPostProcessors.httpBasic("root", "123456"))
                 )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
-
-
-
-
 
 }
