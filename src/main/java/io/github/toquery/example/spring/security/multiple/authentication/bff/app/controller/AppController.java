@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.Map;
 
 /**
@@ -22,10 +23,11 @@ public class AppController {
     @ResponseBody
     @GetMapping(value = {"", "/", "/info", "/index"})
     public Map<String, Object> index(
-            Authentication authentication
+            Authentication authentication,
+            Principal principal
 //            @AuthenticationPrincipal OAuth2User oauth2User,
 //            @RegisteredOAuth2AuthorizedClient("example-spring-authorization-server") OAuth2AuthorizedClient authorizedClient
     ) {
-        return AuthenticationUtils.authenticationInfo(this.getClass().getSimpleName(), authentication, null, null);
+        return AuthenticationUtils.authenticationInfo(this.getClass().getSimpleName(), authentication, principal, null, null);
     }
 }

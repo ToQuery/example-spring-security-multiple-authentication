@@ -59,13 +59,13 @@ spring:
       client:
         registration:
           example-spring-authorization-server:
+            provider: example-spring-authorization-server
             client-id: example-spring-security-multiple-authentication
             client-name: example-spring-security-multiple-authentication
             client-secret: example-spring-security-multiple-authentication-secret
             client-authentication-method: client_secret_basic
             authorization-grant-type: authorization_code
             redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
-            provider: example-spring-authorization-server
             scope:
               - openid
               - read

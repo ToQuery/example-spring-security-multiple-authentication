@@ -1,18 +1,15 @@
-### OAuth2 Authenticate
-POST http://localhost:9000/filter/login
-Content-Type: application/json
+### OAuth2 Client Credentials Authenticate
+POST http://localhost:9000/oauth2/token
+Content-Type:application/x-www-form-urlencoded
+Authorization: Basic example-spring-security-multiple-authentication example-spring-security-multiple-authentication-secret
 
-{
-  "username":"filter",
-  "password":"123456"
-}
+grant_type=client_credentials&scop=write
 
 > {%
     client.global.set("access_token", response.body.access_token);
-    client.global.set("refresh_token", response.body.refresh_token);
 %}
 
 ### Query Info Endpoint
 # @no-cookie-jar
-GET http://localhost:8010/filter/info
+GET http://example-spring-security-multiple-authentication.local:8010/open/info
 Authorization: Bearer {{access_token}}

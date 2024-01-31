@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.Map;
 
 /**
@@ -24,9 +25,11 @@ public class AdminController {
     @GetMapping(value = {"", "/", "/info", "/index"})
     public Map<String, Object> index(
             Authentication authentication,
-            @AuthenticationPrincipal OAuth2User oauth2User,
-            @RegisteredOAuth2AuthorizedClient("example-spring-authorization-server") OAuth2AuthorizedClient authorizedClient
+            Principal principal,
+            @AuthenticationPrincipal OAuth2User oauth2User
+//            ,
+//            @RegisteredOAuth2AuthorizedClient("example-spring-authorization-server") OAuth2AuthorizedClient authorizedClient
     ) {
-        return AuthenticationUtils.authenticationInfo(this.getClass().getSimpleName(), authentication, oauth2User, authorizedClient);
+        return AuthenticationUtils.authenticationInfo(this.getClass().getSimpleName(), authentication, principal, oauth2User, null);
     }
 }

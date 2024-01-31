@@ -58,6 +58,6 @@ public class FilterController {
 //            @AuthenticationPrincipal OAuth2User oauth2User
     ) {
         Authentication authenticationSecurityContextHolder = SecurityContextHolder.getContext().getAuthentication();
-        return AuthenticationUtils.authenticationInfo(this.getClass().getSimpleName(), authentication, null, null);
+        return AuthenticationUtils.authenticationInfo(this.getClass().getSimpleName(), authentication, principal,null, null);
     }
 }

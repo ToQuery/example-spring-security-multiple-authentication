@@ -1,0 +1,4 @@
+### Query Info Endpoint
+# @no-cookie-jar
+GET http://localhost:8010/basic/info
+Authorization: Basic basic 123456

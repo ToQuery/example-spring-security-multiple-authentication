@@ -12,14 +12,14 @@ import org.springframework.security.web.SecurityFilterChain;
 public class LoginSecurityConfig {
 
 
-    @Bean
-    public SecurityFilterChain oauth2LoginSecurityFilterChain(
-            HttpSecurity http
-    ) throws Exception {
-
-        http.oauth2Login(httpSecurityOAuth2LoginConfigurer -> {
-        });
-
-        return http.build();
-    }
+//    @Bean
+//    public SecurityFilterChain oauth2LoginSecurityFilterChain(
+//            HttpSecurity http
+//    ) throws Exception {
+//
+//        http.oauth2Login(httpSecurityOAuth2LoginConfigurer -> {
+//        });
+//
+//        return http.build();
+//    }
 }

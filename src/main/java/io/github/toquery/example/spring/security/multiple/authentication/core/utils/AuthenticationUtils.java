@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,11 +27,12 @@ public class AuthenticationUtils {
         return authorizationHeader.substring(BEARER_TOKEN_TYPE.length());
     }
 
-    public static Map<String, Object> authenticationInfo(String name,Authentication authentication, OAuth2User oauth2User, OAuth2AuthorizedClient authorizedClient) {
+    public static Map<String, Object> authenticationInfo(String name, Authentication authentication, Principal principal, OAuth2User oauth2User, OAuth2AuthorizedClient authorizedClient) {
         Map<String, Object> map = new HashMap<>();
         map.put("name", name);
 
         map.put("authentication", authentication);
+        map.put("principal", principal);
         if (authentication != null) {
             map.put("authentication.getClass().getName()", authentication.getClass().getName());
         }

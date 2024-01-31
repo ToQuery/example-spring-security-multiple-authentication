@@ -2,14 +2,20 @@ package io.github.toquery.example.spring.security.multiple.authentication.core.c
 
 import io.github.toquery.example.spring.security.multiple.authentication.core.security.filter.JwtAuthenticationFilter;
 import io.github.toquery.example.spring.security.multiple.authentication.core.security.handler.AppLogoutHandler;
+import io.github.toquery.example.spring.security.multiple.authentication.core.security.userdetails.FilterUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  *
@@ -18,6 +24,27 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class FilterSecurityConfig {
 
 
+    /**
+     *
+     */
+    @Bean
+    public UserDetailsService filterUserDetailsService() {
+        return new FilterUserDetailsService();
+    }
+
+    @Bean
+    protected AuthenticationProvider filterAuthenticationProvider(UserDetailsService filterUserDetailsService) {
+        DaoAuthenticationProvider appDaoAuthenticationProvider = new DaoAuthenticationProvider();
+        appDaoAuthenticationProvider.setUserDetailsService(filterUserDetailsService);
+        return appDaoAuthenticationProvider;
+    }
+
+
+    @Bean
+    public AuthenticationManager filterAuthenticationManager(AuthenticationProvider filterAuthenticationProvider) {
+        return filterAuthenticationProvider::authenticate;
+    }
+
     @Bean
     public SecurityFilterChain filterSecurityFilterChain(
             HttpSecurity http,
@@ -25,6 +52,7 @@ public class FilterSecurityConfig {
             JwtAuthenticationFilter jwtAuthFilter,
             AppLogoutHandler logoutHandler
     ) throws Exception {
+        http.securityMatcher("/filter/**");
 
         http.csrf(AbstractHttpConfigurer::disable);
 
@@ -37,6 +65,7 @@ public class FilterSecurityConfig {
         http.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
             authorizationManagerRequestMatcherRegistry.requestMatchers("/filter/login").permitAll();
             authorizationManagerRequestMatcherRegistry.requestMatchers("/filter/**").authenticated();
+            authorizationManagerRequestMatcherRegistry.anyRequest().authenticated();
         });
 
         http.logout(logout -> {
